@@ -5,14 +5,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float jumpForce = 10;
-    private Rigidbody PlayerRb;
+    private Rigidbody playerRb;
+    private Animator playerAnim;
     public float gravityModifier = 1.0f;
     public bool isOnground = true;
-    public bool gameOver=false;
+    public bool gameOver = false;
     // Start is called before the first frame update
     void Start()
     {
-        PlayerRb = GetComponent<Rigidbody>();
+        playerRb = GetComponent<Rigidbody>();
+        playerAnim = GetComponent<Animator>();
         Physics.gravity *= gravityModifier;
         // it's the same thing as 
         //Physics.gravity = Physics.gravity * gravityModifier;
@@ -21,22 +23,26 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnground)
+        if (Input.GetKeyDown(KeyCode.Space) && isOnground && !gameOver)
         {
-            PlayerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnground = false;
+            playerAnim.SetTrigger("Jump_trig");
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
-       
+
         if (collision.gameObject.CompareTag("ground"))
         {
             isOnground = true;
-        }else if (collision.gameObject.CompareTag("obstacle"))
+        }
+        else if (collision.gameObject.CompareTag("obstacle"))
         {
-            gameOver=true;
+            gameOver = true;
             Debug.Log("Game Over !");
+            playerAnim.SetBool("Death_b", true);
+            playerAnim.SetInteger("DeathType_int", 1);
         }
     }
 }
