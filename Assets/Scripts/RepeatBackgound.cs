@@ -2,29 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveLeft : MonoBehaviour
+public class RepeatBackgound : MonoBehaviour
 {
-
-    private float speed = 30.0f;
-    private PlayerController playerControllerScript;
+    private Vector3 startPos;
+    private float repeatWidth;
     private float leftBound = -10;
+
     // Start is called before the first frame update
     void Start()
     {
-        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        startPos = transform.position;
+        repeatWidth = GetComponent<BoxCollider>().size.x / 2;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerControllerScript.gameOver == false)
+        if (transform.position.x < startPos.x - repeatWidth)
         {
-            transform.Translate(Vector3.left * Time.deltaTime * speed);
+            transform.position = startPos;
         }
         if (transform.position.x < leftBound && gameObject.CompareTag("obstacle"))
         {
             Destroy(gameObject);
         }
-
     }
 }
