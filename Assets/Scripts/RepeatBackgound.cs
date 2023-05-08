@@ -6,7 +6,7 @@ public class RepeatBackgound : MonoBehaviour
 {
     private Vector3 startPos;
     private float repeatWidth;
-    private float leftBound = -10;
+   
 
     // Start is called before the first frame update
     void Start()
@@ -22,9 +22,6 @@ public class RepeatBackgound : MonoBehaviour
         {
             transform.position = startPos;
         }
-        if (transform.position.x < leftBound && gameObject.CompareTag("obstacle"))
-        {
-            Destroy(gameObject);
-        }
+       
     }
 }
