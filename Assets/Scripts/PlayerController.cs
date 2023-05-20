@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,12 +11,15 @@ public class PlayerController : MonoBehaviour
     private AudioSource playerAudioSource;
     public float gravityModifier = 1.0f;
     public bool isOnground = true;
+    [SerializeField] int doubleJump = 2;
     public bool gameOver = false;
     public float jumpForce = 10;
     public AudioClip jumpSound = null;
     public AudioClip crashSound = null;
     public ParticleSystem explosionParticle;
     public ParticleSystem dirtParticle;
+    private float distance = 0;
+    public TextMeshProUGUI distanceText;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,10 +34,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isOnground && !gameOver)
+        if (!gameOver)
+        {
+            distance +=  Time.deltaTime;
+            distanceText.text = "distance:" + Mathf.FloorToInt(distance);
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && doubleJump > 0 && !gameOver)
         {
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isOnground = false;
+            doubleJump -= 1;
             playerAnim.SetTrigger("Jump_trig");
             dirtParticle.Stop();
             playerAudioSource.PlayOneShot(jumpSound, 1.0f);
@@ -44,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("ground"))
         {
-            isOnground = true;
+            doubleJump = 2; ;
             if (gameOver == false) { dirtParticle.Play(); }
 
         }
